@@ -10,6 +10,7 @@ import com.test.technical_polizas.poliza.repository.PolizaRepository;
 import com.test.technical_polizas.poliza.dto.responses.CreateResponseDto;
 import com.test.technical_polizas.riesgo.Dtos.Requests.CreateRiskDto;
 import com.test.technical_polizas.riesgo.Dtos.Responses.CreateRiskRpseDto;
+import com.test.technical_polizas.riesgo.Dtos.Responses.CreateRiskRspseListDto;
 import com.test.technical_polizas.riesgo.entity.Riesgo;
 import com.test.technical_polizas.riesgo.enums.EstadoRiesgo;
 import com.test.technical_polizas.riesgo.mappers.RiesgoMapper;
@@ -71,7 +72,12 @@ public class PolizaService {
         Riesgo saved = riesgoRepository.save(riesgo);
 
         return RiesgoMapper.toResponse(saved);
+    }
 
+    public List<CreateRiskRspseListDto> findRiesgosByPolizaId(Long polizaId) {
+        List<Riesgo> riesgos =  riesgoRepository.findByPolizaId(polizaId);
 
+        return riesgos.stream().map(RiesgoMapper::toResponseList)
+                .toList();
     }
 }

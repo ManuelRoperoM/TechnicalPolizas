@@ -8,6 +8,7 @@ import com.test.technical_polizas.poliza.enums.TipoPoliza;
 import com.test.technical_polizas.poliza.service.PolizaService;
 import com.test.technical_polizas.riesgo.Dtos.Requests.CreateRiskDto;
 import com.test.technical_polizas.riesgo.Dtos.Responses.CreateRiskRpseDto;
+import com.test.technical_polizas.riesgo.Dtos.Responses.CreateRiskRspseListDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,10 @@ public class PolizaController {
             @PathVariable Long id,
             @Valid @RequestBody CreateRiskDto body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(polizaService.createRisk(id, body));
+    }
+
+    @GetMapping("/{id}/riesgos")
+    public ResponseEntity<List<CreateRiskRspseListDto>> getRiskByPolza(@PathVariable Long id) {
+        return ResponseEntity.ok(polizaService.findRiesgosByPolizaId(id));
     }
 }

@@ -68,6 +68,14 @@ public class PolizaService {
             }
         }
 
+        EstadoPoliza estadoPoliza = poliza.getEstado();
+
+        if (estadoPoliza == EstadoPoliza.INACTIVA) {
+            throw new RuntimeException(
+                    "No se puede agregar un riesgo a una poliza inactiva"
+            );
+        }
+
         Riesgo riesgo = new Riesgo();
         riesgo.setEstado(EstadoRiesgo.ACTIVO);
         riesgo.setPoliza(poliza);
@@ -89,6 +97,12 @@ public class PolizaService {
 
         Poliza poliza = polizaRepository.findById(polizaId)
                 .orElseThrow(() -> new RuntimeException("Póliza no encontrada"));
+        EstadoPoliza estadoPolizaPoliza = poliza.getEstado();
+        if (estadoPolizaPoliza == EstadoPoliza.INACTIVA) {
+            throw new RuntimeException(
+                    "No se puede renovar una poliza inactiva."
+            );
+        }
 
         poliza.setEstado(EstadoPoliza.RENOVADA);
         BigDecimal factor = BigDecimal.ONE.add(IPC_PORCENTAJE);

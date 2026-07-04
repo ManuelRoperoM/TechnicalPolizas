@@ -30,14 +30,11 @@ public class Poliza {
     private EstadoPoliza estado;
 
     @Column(nullable = false)
-    private BigDecimal valor;
+    private BigDecimal canon;
 
     @Column(nullable = false)
     private BigDecimal prima;
 
     @OneToMany(mappedBy = "poliza", cascade = CascadeType.ALL)
     private List<Riesgo> riesgos = new ArrayList<>();
-
-
-
 }

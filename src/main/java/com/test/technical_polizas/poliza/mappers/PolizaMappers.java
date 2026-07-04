@@ -2,6 +2,7 @@ package com.test.technical_polizas.poliza.mappers;
 
 import com.test.technical_polizas.poliza.dto.requests.CreateRequestDto;
 import com.test.technical_polizas.poliza.dto.responses.CreateResponseDto;
+import com.test.technical_polizas.poliza.dto.responses.ListPolizasDto;
 import com.test.technical_polizas.poliza.entity.Poliza;
 
 public class PolizaMappers {
@@ -28,5 +29,15 @@ public class PolizaMappers {
         response.setMessage("Prima creada correctamente");
 
         return response;
+    }
+
+    public static ListPolizasDto toDto(Poliza poliza) {
+        return ListPolizasDto.builder()
+                .id(poliza.getId())
+                .tipo(poliza.getTipo())
+                .estado(poliza.getEstado())
+                .canon(poliza.getCanon())
+                .prima(poliza.getPrima())
+                .build();
     }
 }

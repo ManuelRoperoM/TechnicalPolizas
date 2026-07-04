@@ -1,3 +1,15 @@
 spring:
+
   application:
     name: technical-polizas
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/polizasdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Root123!
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

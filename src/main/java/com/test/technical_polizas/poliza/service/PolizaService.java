@@ -16,7 +16,9 @@ import com.test.technical_polizas.riesgo.enums.EstadoRiesgo;
 import com.test.technical_polizas.riesgo.mappers.RiesgoMapper;
 import com.test.technical_polizas.riesgo.repository.RiesgoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -24,6 +26,8 @@ public class PolizaService {
 
     private final PolizaRepository polizaRepository;
     private final RiesgoRepository riesgoRepository;
+
+    private static final BigDecimal IPC_PORCENTAJE = new BigDecimal("0.0568");
 
     public PolizaService(
             PolizaRepository polizaRepository,
@@ -79,5 +83,39 @@ public class PolizaService {
 
         return riesgos.stream().map(RiesgoMapper::toResponseList)
                 .toList();
+    }
+
+    public  ListPolizasDto renewPoliza(Long polizaId) {
+
+        Poliza poliza = polizaRepository.findById(polizaId)
+                .orElseThrow(() -> new RuntimeException("Póliza no encontrada"));
+
+        poliza.setEstado(EstadoPoliza.RENOVADA);
+        BigDecimal factor = BigDecimal.ONE.add(IPC_PORCENTAJE);
+        poliza.setCanon(poliza.getCanon().multiply(factor));
+        poliza.setPrima(poliza.getPrima().multiply(factor));
+
+        Poliza polizaSaved = polizaRepository.save(poliza);
+
+        return  PolizaMappers.toDto(polizaSaved);
+    }
+
+    @Transactional
+    public ListPolizasDto cancelPoliza(Long polizaId) {
+        Poliza poliza = polizaRepository.findById(polizaId)
+                .orElseThrow(() -> new RuntimeException("Póliza no encontrada"));
+
+        poliza.setEstado(EstadoPoliza.INACTIVA);
+
+        List<Riesgo> riesgos = riesgoRepository.findByPolizaId(polizaId);
+
+        if (!riesgos.isEmpty()) {
+            riesgos.forEach(riesgo -> {
+                riesgo.setEstado(EstadoRiesgo.INACTIVO);
+            });
+            riesgoRepository.saveAll(riesgos);
+        }
+        Poliza save =  polizaRepository.save(poliza);
+        return PolizaMappers.toDto(save);
     }
 }

@@ -53,4 +53,14 @@ public class PolizaController {
     public ResponseEntity<List<CreateRiskRspseListDto>> getRiskByPolza(@PathVariable Long id) {
         return ResponseEntity.ok(polizaService.findRiesgosByPolizaId(id));
     }
+
+    @PostMapping("/{id}/renovar")
+    public ResponseEntity<ListPolizasDto> renewPoliza(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(polizaService.renewPoliza(id));
+    }
+
+    @PostMapping("/{id}/cancelar")
+    public ResponseEntity<ListPolizasDto> CancelPoliza(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(polizaService.cancelPoliza(id));
+    }
 }
